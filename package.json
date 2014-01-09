@@ -19,6 +19,10 @@
     "grunt-autoprefixer": "~0.6.3",
     "grunt-concurrent": "~0.4.1",
     "grunt-coffeelint": "0.0.8",
-    "grunt-notify": "~0.2.16"
+    "grunt-notify": "~0.2.16",
+    "grunt-bump": "0.0.13",
+    "grunt-conventional-changelog": "~1.0.0",
+    "grunt-ftp-deploy": "~0.1.1",
+    "grunt-replace": "~0.5.1"
   }
 }

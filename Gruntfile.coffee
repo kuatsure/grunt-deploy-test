@@ -24,13 +24,13 @@ module.exports = ( grunt ) ->
           livereload:true
 
       coffee:
-        files: [ "<%= yeoman.app %>/coffee/*", "package.json" ]
-        tasks: [ "coffeelint", "coffee:jitter", "copy:js" ]
+        files: [ "<%= yeoman.app %>/coffee/*" ]
+        tasks: [ "coffeelint", "coffee:jitter", "bump-only:prerelease", "replace", "copy:js" ]
         options:
           livereload:true
 
       imports:
-        files: [ "<%= yeoman.bower %>/*.js", "bower.json" ]
+        files: [ "<%= yeoman.bower %>/*.js" ]
         tasks: [ "concat:imports" ]
         options:
           livereload:true
@@ -174,16 +174,53 @@ module.exports = ( grunt ) ->
         options:
           hostname: "*"
 
+    bump:
+      options:
+        files: [ 'package.json' ]
+        updateConfigs: [ 'pkg' ]
+        commit: true
+        commitMessage: 'Release v%VERSION%'
+        commitFiles: [ 'package.json' ] # '-a' for all files
+        createTag: true
+        tagName: 'v%VERSION%'
+        tagMessage: 'Version %VERSION%'
+        push: true
+        pushTo: 'origin'
+        gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' # options to use with '$ git describe'
+
+    replace:
+      options:
+        patterns: [
+          match: 'VERSION',
+          replacement: '<%= pkg.version %>'
+        ]
+      js:
+        files: [
+          expand: true
+          flatten: true
+          src: [ '<%= yeoman.app %>/js/main.js' ]
+          dest: '<%= yeoman.app %>/js'
+        ]
+      html:
+        files: [
+          expand: true
+          flatten: true
+          src: [ '<%= yeoman.app %>/html/index.html' ]
+          dest: '<%= yeoman.app %>/html'
+        ]
+
     concurrent:
       lint:     [ "coffeelint" ]
       compile:  [ "compass", "coffee", "concat:imports" ]
-      post:     [ "autoprefixer" ]
-      dist:     [ "copy", "concat:html" ]
+      post:     [ "autoprefixer", "replace" ]
+      dev:      [ "copy", "concat:html" ]
       minify:   [ "cssmin", "uglify", "htmlmin" ]
 
   # Setting up bigger tasks
-  grunt.registerTask "dev", [ "clean", "concurrent:lint", "concurrent:compile", "concurrent:dist" ]
+  grunt.registerTask "dev", [ "clean", "concurrent:lint", "concurrent:compile", "replace", "concurrent:dev" ]
+
   grunt.registerTask "dist", [ "clean", "concurrent:lint", "concurrent:compile", "concurrent:post", "copy:img", "concat:html", "concurrent:minify" ]
+  grunt.registerTask "dist:check", [ "clean", "concurrent:lint", "concurrent:compile", "concurrent:post", "copy:img", "concat:html", "concurrent:minify", "connect", "watch" ]
 
   grunt.registerTask "serve", [ "dev", "connect:server", "watch" ]
 
