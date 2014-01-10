@@ -6,7 +6,7 @@ this uses a custom build of [`grunt-bump`](https://github.com/kuatsure/grunt-bum
 
 ### thoughts
 
-Here's a [workflow that I'm figuring out]. [workflow](http://d.pr/i/Czor)
+Here's a [workflow that I'm figuring out](http://d.pr/i/Czor).
 
 I have a `bump-only` task on `watch` that increaments `build` / `prerelease` number. However I'm not sure how I feel about it. Ideally I don't want the `package.json` to be updated like crazy in the `develop` branch ( because that's where the prerelease number would come into play ). So I'm thinking only major/minor/patch versions will be done, with no prerelease on the `watch` task, or `develop` branch.
 
